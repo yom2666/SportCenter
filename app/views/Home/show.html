@@ -1,0 +1,251 @@
+#{extends 'main.html' /}
+#{set title:'Ligue 1 - Fin de saison' /}
+#{set 'moreScripts'}
+    #{script 'jquery/js/jquery-ui-1.8.13.custom.min.js'/}
+    #{script 'messcripts.js'/}
+    #{script 'zxml.js'/}
+    <script>
+		match = 0;
+		team = new Array();
+		team["h"] = 1; team["e"] = 7;
+		q = "g_pts";
+		var tableUrl = "@@{Home.getTable(sp, l, s, 2) }";
+		gbloc = ${bloc ? bloc : 0};
+		jQuery(document).ready(function(){
+			$("#accordeon").accordion({ header: "h5", active: ${bloc ? bloc : 0},collapsible:true, autoHeight:false });
+		});
+	</script>
+#{/set}
+#{set 'moreStyles'}
+    #{stylesheet 'jquery/css/south-street/jquery-ui-1.8.13.custom.css'/}
+    <style type="text/css">
+	<!--
+	#actual {
+		position: absolute;
+		width: 30%; /*250px;*/
+		left: 2%; /*30px;*/
+		top: 100px;
+	}
+	#new {
+		position: absolute;
+		width: 30%; /*250px;*/
+		right: 2%; /*80px;*/
+		top: 100px;
+	}
+	#middle {
+		top: 100px;
+		width: 30%; /*438px;*/
+		position: absolute;
+		left: 35%; /*365px;*/
+		height: 546px;
+	}
+	.day {
+		border: thin dotted #00FF00;
+		padding : 5px;
+	}
+	h2, th, td
+	
+	        {
+	
+	            text-align:center;
+	
+	        }
+	
+	        table
+	
+	        {
+	
+	            border-collapse:collapse;
+	
+	            border:2px solid black;
+	
+	            margin:auto;
+	
+	        }
+	
+	        th, td
+	
+	        {
+	
+	            border:1px solid black;
+	
+	        }
+	
+		.red
+	
+		{
+	
+			color: #ff0000;
+	
+		}
+	
+		.green
+	
+		{
+	
+			color: #00FF00;
+	
+		}
+		.actuel
+		{
+			color:green;
+			text-decoration:none;
+		}
+		.lien
+		{
+			cursor:pointer;
+			color:#FF9900;
+			font-weight:bold;
+		}
+		.rg19, .rg20, .rg18 {
+			background-color : #fc9696;
+		}
+		.rg1 {
+			background-color : #62ac62;
+		}
+		.rg2 {
+			background-color : #68d868;
+		}
+		.rg3 {
+			background-color : #91f991;
+		}
+		.rg4,.rg5 {
+			background-color : #bae961;
+		}
+		.statutM .team{
+			font-weight : bold;
+			color : #424242;
+		}
+		.statutR .team{
+			color : #8d0803;
+		}
+		.statutE .team{
+			font-weight : bold;
+			color : #f28828;
+		}
+		.statutB .team{
+			font-weight : bold;
+			color : #998b04;
+		}
+		.statutL .team{
+			font-weight : bold;
+			color : #2a6225;
+		}
+		.statutT .team{
+			font-weight : bold;
+			color : #ebb806;
+		}
+		a.menu {
+			text-decoration : none;
+			font-weight : bold;
+			 color : #4efaf7;
+		}
+		a.menu:hover {
+			text-decoration : underline;
+			background-color : #4efaf7;
+			font-weight : bold;
+			 color : white;
+		}
+		.proba{
+			text-decoration : none;
+			color:black;
+		}
+		.proba:hover{
+			color : #ffcc00;
+		}
+		.datematch{
+			text-decoration : none;
+			color:black;
+		}
+		.datematch:hover{
+			text-decoration : underline;
+		}
+	-->
+	</style>
+#{/set}
+<h1 align="center"><font color="#FF9900">Ligue 1 - Fin de saison </font></h1>
+<a id="rank" class="lien" onclick="qchange('rank');loader();">Ranking</a>
+&nbsp;&nbsp;<a id="g_pts" class="actuel" onclick="qchange('g_pts');loader();">Général</a>
+&nbsp;&nbsp;<a id="d_pts" class="lien" onclick="qchange('d_pts');loader();">Domicile</a>
+&nbsp;&nbsp;<a id="x_pts" class="lien" onclick="qchange('x_pts');loader();">Exterieur</a>
+<div id="alert"></div>
+<br/>
+<div align="left" id="actual">
+<h3><font color="#009900">Classement Actuel: </font></h3>
+<table width="90%">
+  <tr>
+    <th width="8%">Pos</th>
+    <th width="35%">Equipe</th>
+    <th width="8%">Pts</th>
+	<th width="6%">G</th>
+	<th width="6%">N</th>
+	<th width="6%">P</th>
+	<th width="6%">E</th>
+	<th>TLBEMR</th>
+	</tr>
+</table>
+</div>
+<div id="middle"><center>
+<a class="menu" href="@{init.modGame(sp.name, l.name, s.name)}">mod date</a>&nbsp;&nbsp;<a class="menu" href="played.php">played</a>&nbsp;&nbsp;<a class="menu" href="goals.php">Buts</a>&nbsp;&nbsp;<a class="menu" href="@{init.addGame(sp.name, l.name, s.name)}">Add</a>
+</center>
+  <br/>
+  <div id="accordeon">
+  %{
+  old = 0;
+  min = 39;
+  _bloc = -1;
+  }%
+  #{list items:games, as:'game' }
+  	%{
+  		if(game.jr != old)
+  		{
+  			if(game.jr < min)
+  			{
+  				min = game.jr
+  			}
+  			oldd = 0;
+  			if(old != 0)
+  			{
+  				out.print('</div>');
+  			}
+  			old = game.jr
+  			_bloc++;
+  			out.print('<h5><a href="#">'+game.jr+'ème</a></h5><div>');
+		}
+		if(oldd != game.date)
+		{
+			out.print('<hr/><a class="datematch" href="javascript:classuntildate('+game.date+');" title="Classement jusqu\'à cette date">'+game.date?.asdate('dd/MM/yy HH:mm')+'</a><hr/>');
+			oldd = game.date;
+		}
+	}%
+	<p align="center" style="font-size:0.5em;">
+	<form method="post">
+	<input type="hidden" name="match" value="${game.id}" />
+	<input type="hidden" name="bloc" value="${_bloc}" />
+	<input type="hidden" name="id_team_d" value="${game.home.id}" />
+	<input type="hidden" name="id_team_x" value="${game.away.id}" />
+    <span title="0.33">${game.home.name}</span>
+      &nbsp;&nbsp;
+       <input name="sc_h" type="text" size="1" value="${game.scoreHome}" />&nbsp;
+      <span title="0.33">-</span>&nbsp;
+      <input name="sc_e" type="text" size="1"  value="${game.scoreAway}" /> &nbsp;&nbsp;
+     <span title="0.33">${game.away.name}</span><br/>
+	<input type="submit" name="submit" value="Mettre à Jour" />
+	</form>
+  </p>
+  #{/list}
+  </div>
+  </div>
+  <a class="menu" href="modcotes.php">Modifier côtes</a>
+</div>
+<div align="right" id="new">
+<h3 align="left"><font color="#009900">Nouveau Classement : </font></h3>
+<table width="90%">
+  <tr>
+    <th width="20%">Pos</th>
+    <th width="60%">Equipe</th>
+    <th>Pts</th>
+  </tr>
+</table>
+</div>
+<p>&nbsp;</p>

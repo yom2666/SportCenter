@@ -1,0 +1,13 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+#{if sports} 
+	#{list items:sports, as:'sport'}
+		<div class="show">
+			<a class="show-name" href="@{Home.sport(sport.name)}">${sport.name}</a>
+		</div>
+	#{/list} 
+#{/if} 
+#{else}
+	<div class="empty">There is currently nothing to read here.</div>
+#{/else}

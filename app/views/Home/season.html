@@ -1,0 +1,14 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+<a href="@{home.league(sp.name, l.name)}"> Retour</a>
+<a href="@{init.addGame(sp.name, l.name, s.name)}"> Add Game</a>
+#{if games} 
+	#{list items:games, as:'game'}
+		<div class="show">
+ 			<!-- <a class="show-name" href="@{Home.show(sp.name, l.name, s.name)}">-->${game.home.name} - ${game.away.name}<!--</a> -->
+		</div>
+	#{/list} 
+#{/if} 
+#{else}
+	<div class="empty">There is currently nothing to read here.</div>
+#{/else}

@@ -1,0 +1,24 @@
+<p align="center">
+	#{form @Init.doGlobalMod(sp.name, l.name, s.name, jr), method:'POST'}
+		<input type="hidden" name="jr" value="${jr}" />
+		Global : <input name="date" type="text" size="10" value="${new Date().format('ddMMyyHHmm')}"/>&nbsp;
+		<input type="submit" name="submit_all" value="Maj" /><br/>
+	#{/form}
+</p>
+#{list items:games, as:'game'}
+<p align="center">
+	#{form @Init.doMod(sp.name, l.name, s.name, jr), method:'POST'}
+		<input type="hidden" name="id" value="${game.id}" />
+		<input type="hidden" name="jr" value="${game.id}" />
+		<input type="checkbox" name="played" value="1" ${game.played ? 'checked="yes"' : ''}>&nbsp;&nbsp;
+		${game.home.name}
+      	&nbsp;&nbsp;
+       	<input name="date" type="text" size="10" value="${game.date?.asdate('ddMMyyHHmm')}"/>&nbsp;
+      	&nbsp;
+		${game.away.name}
+		&nbsp;&nbsp;&nbsp; 
+		( ${game.date?.asdate('dd/MM/yy HH:mm')} ) 
+		<input type="submit" name="submit" value="Maj" /><br/>
+	#{/form}
+</p>
+#{/list}

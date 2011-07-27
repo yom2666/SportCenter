@@ -1,0 +1,25 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Import CRUD routes
+*      	/crud	            							module:crud
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Home page
+GET     /                                       		Home.index
+GET		/xph32z/debug/{action}							Debug.{action}
+GET		/{sport}/?										Home.sport
+GET		/{sport}/{league}/?								Home.league
+GET		/{sport}/{league}/{season}/?					Home.season
+*		/{sport}/{league}/{season}/{ctrl}/{action}		{ctrl}.{action}
+GET		/{sport}/{league}/{season}/{subctrl}/{action}	Sport.unknown
+
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

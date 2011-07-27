@@ -1,0 +1,30 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+#{set 'moreScripts'}
+    #{script 'jquery/js/jquery-ui-1.8.13.custom.min.js'/}
+    #{script 'messcripts.js'/}
+    #{script 'zxml.js'/}
+    <script>
+		jQuery(document).ready(function(){
+			$("#tabs").tabs({
+				selected: ${jr -1}, 
+				ajaxOptions: {
+					error: function( xhr, status, index, anchor ) {
+						$( anchor.hash ).html( "Couldn't load this tab. We'll try to fix this as soon as possible. " );
+					}
+				}});
+		});
+	</script>
+#{/set}
+#{set 'moreStyles'}
+    #{stylesheet 'jquery/css/south-street/jquery-ui-1.8.13.custom.css'/}
+#{/set}
+<br/>
+<center><a href="@{Home.season(sp.name, l.name, s.name)}">Retour</a></center>
+<div id="tabs">
+	<ul>
+		#{list items:1..38, as:'jour'}
+		    <li><a href="@{Init.modGameJr(sp.name, l.name, s.name, jour)}">${jour}ème </a></li>
+		#{/list}
+	</ul>
+</div>

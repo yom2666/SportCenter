@@ -1,0 +1,21 @@
+#{list items:games, as:'game'}
+<p align="center" style="font-size:0.5em;">
+	#{form @Init.doDelete(sp.name, l.name, s.name, jr), method:'POST'}
+		<input type="hidden" name="id" value="${game.id}" />
+	      ${game.home.name}
+		  &nbsp;-&nbsp;
+	      ${game.away.name}
+		<input type="submit" name="delete" value="Effacer" />
+	#{/form}
+ 	</p>
+ 	#{/list}
+#{if teams}
+	<p align="center" style="font-size:0.5em;">
+		#{form @Init.doAdd(sp.name, l.name, s.name, jr), method:'POST'}
+				#{select 'homeId', items:teams /}
+				  &nbsp;-&nbsp;
+			    #{select 'awayId', items:teams /}
+			<input type="submit" name="submit" value="Ajouter" />
+		#{/form}
+	</p>
+#{/if}

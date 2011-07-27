@@ -1,0 +1,9 @@
+# Application dependencies
+    
+require:
+    - play
+    - play -> crud
+    - play -> db 1.1.1
+    - play -> cloudbees 0.2.2
+    - com.google.guava -> guava r09
+    - joda-time 1.6.2

@@ -1,0 +1,29 @@
+<!-- $tabtri = Array('rank' => 'rank', 'g_pts' => 'g_pts DESC, g_diff DESC, g_bp', 'd_pts' => 'd_pts DESC, d_diff DESC, d_bp', 'x_pts' => 'x_pts DESC, x_diff DESC, x_bp'); -->
+<tr>
+    <th width="7%">Pos</th>
+    <th width="35%">Equipe</th>
+    <th width="7%">Pts</th>
+	<th width="6%">J</th>
+	<th width="6%">G</th>
+	<th width="6%">N</th>
+	<th width="6%">P</th>
+	<th width="6%">M</th>
+	<th width="6%">E</th>
+	<th width="7%">GA</th>
+	<th><a class="proba" href="probas.php?q=titre" title="Voir les probabilités pour le titre">T</a><a class="proba" href="probas.php?q=ldc" title="Voir les probabilités pour la ligue des champions">L</a><a class="proba" href="probas.php?q=bar" title="Voir les probabilités pour les barrages de la ligue des Champions">B</a><a class="proba" href="probas.php?q=euro" title="Voir les probabilités pour la ligue europa">E</a><a class="proba" href="probas.php?q=rel" title="Voir les probabilités pour la relegation">R</a></th>
+</tr>
+#{list items:ranks, as:'rank'}
+	<tr class="rg${rank_index}">
+	    <td width="7%">${rank_index}</td>
+	    <td class="team" width="35%">${rank.team.name}</td>
+	    <td width="7%">${rank.gPts}</td>
+		<td width="6%">${rank.gJoues}</td>
+		<td width="6%">${rank.gG}</td>
+		<td width="6%">${rank.gN}</td>
+		<td width="6%">${rank.gP}</td>
+		<td width="6%">${rank.gBp}</td>
+		<td width="6%">${rank.gBc}</td>
+		<td width="7%">${rank.gDiff}</td>
+		<td>?????</td>
+	</tr>
+#{/list} 

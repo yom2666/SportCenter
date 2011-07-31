@@ -41,11 +41,26 @@ public class Ranks
 			if(ranks == null || ranks.isEmpty())
 			{
 				ranks = getRanks(sport, league, season, jr - 1);
-				// TODO : handle day games
+				for(Rank r : ranks)
+				{
+					r.copy(jr).save();
+				}
 			}
 		}
 		Collections.sort(ranks, Rank.GENERAL_COMPARATOR);
 		return ranks;
+	}
+	
+	public static Rank find(List<Rank> ranks, Team t)
+	{
+		for(Rank r : ranks)
+		{
+			if(r.team.equals(t))
+			{
+				return r;
+			}
+		}
+		return null;
 	}
 
 }

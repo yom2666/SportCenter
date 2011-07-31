@@ -1,0 +1,15 @@
+#{list items:games, as:'game'}
+<p align="center">
+	#{form @Manage.doPlayed(sp.name, l.name, s.name, jr), method:'POST'}
+		<input type="hidden" name="id" value="${game.id}" />
+		${game.home.name}
+     	&nbsp;&nbsp;
+      	<input name="scoreHome" type="text" size="1" value="${game.scoreHome}"/>
+      	&nbsp;-&nbsp;
+  		<input name="scoreAway" type="text" size="1" value="${game.scoreAway}"/>
+  		&nbsp;&nbsp;
+		${game.away.name}
+		<input type="submit" name="submit" value="Valider" /><br/>
+	#{/form}
+</p>
+#{/list}

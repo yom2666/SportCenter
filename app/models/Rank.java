@@ -68,6 +68,49 @@ public class Rank extends Model{
 		this.jr = jr;
 	}
 	
+	public void update()
+	{
+		dJoues = dG + dN + dP;
+		xJoues = xG + xN + xP;
+		dPts = dG * 3 + dN;
+		xPts = xG * 3 + dN;
+		dDiff = dBp - dBc;
+		xDiff = xBp - xBc;
+		gPts = dPts + xPts;
+		gJoues = dJoues + xJoues;
+		gG = dG + xG;
+		gN = dN + xN;
+		gP = dP + xP;
+		gBp = dBp + xBp;
+		gBc = dBc + xBc;
+		gDiff = dDiff + xDiff;
+	}
+	
+	@Override
+	public String toString() 
+	{
+		StringBuilder sb  = new StringBuilder(team.name);
+		sb.append("  ");
+		sb.append("Pts:");
+		sb.append(gPts);
+		return sb.toString();
+	}
+	
+	public Rank copy(int jr)
+	{
+		Rank r = new Rank(team, season, jr);
+		try {
+			r = (Rank) this.clone();
+		} catch (CloneNotSupportedException e) 
+		{
+			e.printStackTrace();
+		}
+		r.jr = jr;
+		r.team = this.team;
+		r.season = this.season;
+		return r;
+	}
+	
 	private static int compare(int pts1, int pts2, int diff1, int diff2, int bp1, int bp2, String name1, String name2)
 	{
 		if(pts1 == pts2)

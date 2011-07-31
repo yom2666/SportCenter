@@ -1,9 +1,14 @@
 package controllers;
 
+import java.util.List;
+
 import play.mvc.Controller;
+import models.Game;
 import models.League;
+import models.Rank;
 import models.Season;
 import models.Sport;
+import models.Team;
 
 public class Manage extends Controller
 {
@@ -19,6 +24,121 @@ public class Manage extends Controller
 			if(jr <= 0) jr = 1;
 			render(sp, l, s, jr);
 		}
+	}
+	
+	public static void playedJr(String sport, String league, String season, int jr)
+	{
+		Object[] ooo = Home.controll(sport, league, season);
+		if(ooo != null)
+		{
+			Sport sp = (Sport) ooo[0];
+			League l = (League) ooo[1];
+			Season s = (Season) ooo[2];
+			List<Game> games = Game.find("season = ? AND jr = ? AND played=false ORDER BY date", s, jr).fetch();
+			render(sp, l, s, jr, games);
+		}
+	}
+	
+	public static void doPlayed(String sport, String league, String season, int jr, long id, int scoreHome, int scoreAway)
+	{
+		Object[] ooo = Home.controll(sport, league, season);
+		if(ooo != null)
+		{
+			Sport sp = (Sport) ooo[0];
+			League l = (League) ooo[1];
+			Season s = (Season) ooo[2];
+			Game g = Game.findById(id);
+			g.scoreHome = scoreHome;
+			g.scoreAway = scoreAway;
+			List<Rank> ranks = Ranks.getRanks(sp, l, s, jr);
+			Rank homeRank = Ranks.find(ranks, g.home);
+			Rank awayRank = Ranks.find(ranks, g.away);
+			if(g.scoreHome > g.scoreAway)
+			{
+				double pts = 0;
+				double rg = homeRank.rank - awayRank.rank;
+				rg += 3;
+				if(rg > 10)
+				{
+					pts = 0;
+				}
+				else if(rg < -10)
+				{
+					pts = 2;
+				}
+				else
+				{
+					int diff = g.scoreHome - g.scoreAway;
+					double k = 2 - 1 / diff;
+					pts = k * (-0.1 * rg + 1);
+					pts = Math.ceil(100 * pts) / 100;
+				}
+				homeRank.rank += pts;
+				awayRank.rank -= pts;
+				homeRank.dG += 1;
+				awayRank.xP += 1;
+			}
+			else if(g.scoreHome < g.scoreAway)
+			{
+				double pts = 0;
+				double rg = awayRank.rank - homeRank.rank;
+				rg -= 3;
+				if(rg > 10)
+				{
+					pts = 0;
+				}
+				else if(rg < -10)
+				{
+					pts = 2;
+				}
+				else
+				{
+					int diff = g.scoreAway - g.scoreHome;
+					double k = 2 - 1 / diff;
+					pts = k * (-0.1 * rg + 1);
+					pts = Math.ceil(100 * pts) / 100;
+				}
+				homeRank.rank -= pts;
+				awayRank.rank += pts;
+				homeRank.dP += 1;
+				awayRank.xG += 1;
+			}
+			else
+			{
+				double pts = 0;
+				double rg = homeRank.rank - awayRank.rank;
+				rg += 3;
+				if(rg > 10)
+				{
+					pts = -1;
+				}
+				else if(rg < -10)
+				{
+					pts = 1;
+				}
+				else
+				{
+					pts = -0.1 * rg;
+					pts = Math.ceil(100 * pts) / 100;
+				}
+				homeRank.rank += pts;
+				awayRank.rank -= pts;
+				homeRank.dN += 1;
+				awayRank.xN += 1;
+			}
+			homeRank.dBp += g.scoreHome;
+			homeRank.dBc += g.scoreAway;
+			awayRank.dBp += g.scoreAway;
+			awayRank.dBc += g.scoreHome;
+			for(Rank r : ranks)
+			{
+				r.update();
+				r.save();
+			}
+			g.played = true;
+			g.save();
+		}
+		played(sport, league, season, jr);
 	}
 	
 }

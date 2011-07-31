@@ -1,198 +1,30 @@
-<?php
-include 'connect.php';
-if($_POST['submit']){
-	
-	$id_m = $_POST['id'];
-	$ret = mysql_query("SELECT * FROM l1rank_match WHERE played=0 AND id=".$id_m)or die(mysql_error()." => "."SELECT * FROM l1rank_match WHERE id=".$id_m);
-	$don2 = mysql_fetch_array($ret);
-	$ret = mysql_query("SELECT * FROM l1rank_teams ORDER BY g_pts DESC, g_diff DESC, g_bp DESC, equipe ASC")or die(mysql_query());
-	while($don = mysql_fetch_array($ret)){
-		$after[$don['equipe']] = Array(	'pos' => $i,
-									'rank' => $don['rank'],
-									'g_pts' => $don['g_pts'],
-									'g_joues' => $don['g_joues'],
-									'g_p' => $don['g_p'],
-									'g_n' => $don['g_n'],
-									'g_g' => $don['g_g'],
-									'g_bp' => $don['g_bp'],
-									'g_bc' => $don['g_bc'],
-									'g_diff' => $don['g_diff'],
-									'd_pts' => $don['d_pts'],
-									'd_joues' => $don['d_joues'],
-									'd_p' => $don['d_p'],
-									'd_n' => $don['d_n'],
-									'd_g' => $don['d_g'],
-									'd_bp' => $don['d_bp'],
-									'd_bc' => $don['d_bc'],
-									'd_diff' => $don['d_diff'],
-									'x_pts' => $don['x_pts'],
-									'x_joues' => $don['x_joues'],
-									'x_p' => $don['x_p'],
-									'x_n' => $don['x_n'],
-									'x_g' => $don['x_g'],
-									'x_bp' => $don['x_bp'],
-									'x_bc' => $don['x_bc'],
-									'x_diff' => $don['x_diff']);
-		$i++;
-	}
-	if($don2['score_d'] > $don2['score_x']){
-		$RG = $after[$don2['id_team_d']]['rank'] - $after[$don2['id_team_x']]['rank'];
-		$RG += 3;
-		if($RG > 10){
-			$pts = 0;
-		}else if($RG < -10){
-			$pts = 2;
-		}else{
-			$diff = $don2['score_d'] - $don2['score_x'];
-			$k = 2 - 1 / $diff;
-			$pts = $k * (-0.1 * $RG + 1);
-			$pts = ceil(100*$pts)/100;
-		}
-		$after[$don2['id_team_d']]['rank'] += $pts;
-		$after[$don2['id_team_x']]['rank'] -= $pts;
-		$after[$don2['id_team_d']]['d_g'] += 1;
-		$after[$don2['id_team_x']]['x_p'] += 1;
-	}
-	elseif($don2['score_d'] < $don2['score_x']){
-		$RG = $after[$don2['id_team_x']]['rank'] - $after[$don2['id_team_d']]['rank'];
-		$RG -= 3;
-		if($RG > 10){
-			$pts = 0;
-		}else if($RG < -10){
-			$pts = 2;
-		}else{
-			$diff = $don2['score_x'] - $don2['score_d'];
-			$k = 2 - 1 / $diff;
-			$pts = $k * (-0.1 * $RG + 1);
-			$pts = ceil(100*$pts)/100;
-		}
-		$after[$don2['id_team_d']]['rank'] -= $pts;
-		$after[$don2['id_team_x']]['rank'] += $pts;
-		$after[$don2['id_team_d']]['d_p'] += 1;
-		$after[$don2['id_team_x']]['x_g'] += 1;
-	}
-	else{
-		$RG = $after[$don2['id_team_d']]['rank'] - $after[$don2['id_team_x']]['rank'];
-		$RG += 3;
-		if($RG > 10){
-			$pts = -1;
-		}else if($RG < -10){
-			$pts = 1;
-		}else{
-			$pts = -0.1 * $RG;
-			$pts = ceil(100*$pts)/100;
-		}
-		$after[$don2['id_team_d']]['rank'] += $pts;
-		$after[$don2['id_team_x']]['rank'] -= $pts;
-		$after[$don2['id_team_d']]['d_n'] += 1;
-		$after[$don2['id_team_x']]['x_n'] += 1;
-	}
-	$after[$don2['id_team_d']]['d_bp'] += $don2['score_d'];
-	$after[$don2['id_team_d']]['d_bc'] += $don2['score_x'];
-	$after[$don2['id_team_x']]['x_bc'] += $don2['score_d'];
-	$after[$don2['id_team_x']]['x_bp'] += $don2['score_x'];
-	foreach($after as $eq => $tab){
-		$tab['d_joues'] = $tab['d_g'] + $tab['d_n'] + $tab['d_p'];
-		$tab['x_joues'] = $tab['x_g'] + $tab['x_n'] + $tab['x_p'];
-		$tab['d_pts'] = $tab['d_g']*3 + $tab['d_n'];
-		$tab['x_pts'] = $tab['x_g']*3 + $tab['x_n'];
-		$tab['d_diff'] = $tab['d_bp'] - $tab['d_bc'];
-		$tab['x_diff'] = $tab['x_bp'] - $tab['x_bc'];
-		$tab['g_pts'] = $tab['d_pts'] + $tab['x_pts'];
-		$tab['g_joues'] = $tab['d_joues'] + $tab['x_joues'];
-		$tab['g_g'] = $tab['d_g'] + $tab['x_g'];
-		$tab['g_n'] = $tab['d_n'] + $tab['x_n'];
-		$tab['g_p'] = $tab['d_p'] + $tab['x_p'];
-		$tab['g_bp'] = $tab['d_bp'] + $tab['x_bp'];
-		$tab['g_bc'] = $tab['d_bc'] + $tab['x_bc'];
-		$tab['g_diff'] = $tab['d_diff'] + $tab['x_diff'];
-		$after[$eq] = $tab;
-	}
-function g_ptstri($b,$a){
-	if($a['g_pts']>$b['g_pts']) return 1;
-	if($a['g_pts']<$b['g_pts']) return -1;
-	return g_difftri($b,$a);
-}
-function g_difftri($b,$a){
-	if($a['g_diff']>$b['g_diff']) return 1;
-	if($a['g_diff']<$b['g_diff']) return -1;
-	return g_bptri($b,$a);
-}
-function g_bptri($b,$a){
-	if($a['g_bp']>$b['g_bp']) return 1;
-	if($a['g_bp']<$b['g_bp']) return -1;
-	return $a['pos']<$b['pos'];
-}
-	uasort($after,"g_ptstri");
-	foreach($after as $eq => $tab){
-		/*echo "UPDATE l1rank_teams SET 
-		g_pts=".$tab['g_pts'].",g_joues=".$tab['g_joues'].",g_g=".$tab['g_g'].",g_n=".$tab['g_n'].",
-		g_p=".$tab['g_p'].",g_bp=".$tab['g_bp'].",g_bc=".$tab['g_bc'].",g_diff=".$tab['g_diff'].",
-		d_pts=".$tab['d_pts'].",d_joues=".$tab['d_joues'].",d_g=".$tab['d_g'].",d_n=".$tab['d_n'].",
-		d_p=".$tab['d_p'].",d_bp=".$tab['d_bp'].",d_bc=".$tab['d_bc'].",d_diff=".$tab['d_diff'].",
-		x_pts=".$tab['x_pts'].",x_joues=".$tab['x_joues'].",x_g=".$tab['x_g'].",x_n=".$tab['x_n'].",
-		x_p=".$tab['x_p'].",x_bp=".$tab['x_bp'].",x_bc=".$tab['x_bc'].",x_diff=".$tab['x_diff']." WHERE equipe='".$eq."'<br/>";*/
-		mysql_query("UPDATE l1rank_teams SET rank=".$tab['rank'].",
-		g_pts=".$tab['g_pts'].",g_joues=".$tab['g_joues'].",g_g=".$tab['g_g'].",g_n=".$tab['g_n'].",
-		g_p=".$tab['g_p'].",g_bp=".$tab['g_bp'].",g_bc=".$tab['g_bc'].",g_diff=".$tab['g_diff'].",
-		d_pts=".$tab['d_pts'].",d_joues=".$tab['d_joues'].",d_g=".$tab['d_g'].",d_n=".$tab['d_n'].",
-		d_p=".$tab['d_p'].",d_bp=".$tab['d_bp'].",d_bc=".$tab['d_bc'].",d_diff=".$tab['d_diff'].",
-		x_pts=".$tab['x_pts'].",x_joues=".$tab['x_joues'].",x_g=".$tab['x_g'].",x_n=".$tab['x_n'].",
-		x_p=".$tab['x_p'].",x_bp=".$tab['x_bp'].",x_bc=".$tab['x_bc'].",x_diff=".$tab['x_diff']." WHERE equipe='".$eq."'");
-	}
-	mysql_query("UPDATE l1rank_match SET played=1 WHERE id=".$id_m);
-}
-?>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<link type="text/css" href="../jquery/css/cupertino/jquery-ui-1.7.1.custom.css" rel="stylesheet" />	
-<script type="text/javascript" src="../jquery/js/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="../jquery/js/jquery-ui-1.7.1.custom.min.js"></script>
-<script>
-jQuery(document).ready(function(){
-	$("#tabs").tabs().tabs("select", <? echo $_POST['jr']?"\"#j-".$_POST['jr']."\"":0?>);
-});
-</script>
-</head>
-<body>
+#{extends 'main.html' /}
+#{set title:'Played' /}
+#{set 'moreScripts'}
+    #{script 'jquery/js/jquery-ui-1.8.13.custom.min.js'/}
+    #{script 'messcripts.js'/}
+    #{script 'zxml.js'/}
+    <script>
+		jQuery(document).ready(function(){
+			$("#tabs").tabs({
+				selected: ${jr -1}, 
+				ajaxOptions: {
+					error: function( xhr, status, index, anchor ) {
+						$( anchor.hash ).html( "Couldn't load this tab. We'll try to fix this as soon as possible. " );
+					}
+				}});
+		});
+	</script>
+#{/set}
+#{set 'moreStyles'}
+    #{stylesheet 'jquery/css/south-street/jquery-ui-1.8.13.custom.css'/}
+#{/set}
 <br/>
-<center><a href="index.php">Retour</a></center>
+<center><a href="@{Home.season(sp.name, l.name, s.name)}">Retour</a></center>
 <div id="tabs">
-<?php
-$ret = mysql_query("SELECT DISTINCT jr FROM l1rank_match WHERE played=0 ORDER BY jr")or die(mysql_error());
-while($don = mysql_fetch_array($ret)){
-	$jours[] = $don['jr'];
-}
-$ul = '<ul>';
-foreach($jours as $jour){
-	$ul .= '<li><a href="#j-'.$jour.'">'.$jour.'ème </a></li>';
-}
-$ul .= '</ul>';
-
-echo $ul;
-foreach($jours as $jour){
-	echo '<div id="j-'.$jour.'">';
-	$ret = mysql_query("SELECT * FROM l1rank_match WHERE played=0 AND jr=".$jour." ORDER BY timestamp");
-	while($don = mysql_fetch_array($ret)){
-?>
-<p align="center">
-	<form method="POST">
-	<input type="hidden" name="id" value="<?php echo $don['id'] ?>" />
-	<input type="hidden" name="jr" value="<?php echo $don['jr'] ?>" />
-		<?php echo $don['id_team_d']; ?>
-      &nbsp;&nbsp;
-       <input name="sc_d" type="text" size="1" value="<?php echo $don['score_d'] ?>"/>&nbsp;
-      -&nbsp;
-	  <input name="sc_x" type="text" size="1" value="<?php echo $don['score_x'] ?>"/>&nbsp;&nbsp;
-		<?php echo $don['id_team_x'] ?>
-	<input type="submit" name="submit" value="Valider" /><br/>
-	</form>
-  </p>
-<?php
-	}
-	echo '</div>';
-}
-?>
+	<ul>
+		#{list items:1..38, as:'jour'}
+		    <li><a href="@{Manage.playedJr(sp.name, l.name, s.name, jour)}">${jour}ème </a></li>
+		#{/list}
+	</ul>
 </div>
-</body>
-</html>

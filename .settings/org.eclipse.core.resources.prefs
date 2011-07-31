@@ -1,7 +1,8 @@
-#Mon Jul 25 22:56:02 CEST 2011
+#Sun Jul 31 21:12:22 CEST 2011
 eclipse.preferences.version=1
 encoding//app/views/Home/getTable.html=UTF-8
 encoding//app/views/Home/show.html=UTF-8
 encoding//app/views/Init/addGame.html=UTF-8
 encoding//app/views/Init/modGame.html=UTF-8
+encoding//app/views/Manage/played.html=UTF-8
 encoding/<project>=UTF-8

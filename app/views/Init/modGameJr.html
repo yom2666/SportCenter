@@ -9,7 +9,6 @@
 <p align="center">
 	#{form @Init.doMod(sp.name, l.name, s.name, jr), method:'POST'}
 		<input type="hidden" name="id" value="${game.id}" />
-		<input type="hidden" name="jr" value="${game.id}" />
 		<input type="checkbox" name="played" value="1" ${game.played ? 'checked="yes"' : ''}>&nbsp;&nbsp;
 		${game.home.name}
       	&nbsp;&nbsp;

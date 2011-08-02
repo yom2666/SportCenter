@@ -1,54 +1,9 @@
-function addmatch(){
-	if(match < 10){
-		var elm = document.getElementById("m"+match);
-		elm.style.visibility = "";
-		preretire_equipe();
-		match++;
-	}
-	else{
-		alert("Pas plus de 10 matchs");
-	}
-}
-
-function delmatch(){
-	if(match > 0){
-		match--;
-		var elm = document.getElementById("m"+match);
-		elm.style.visibility = "hidden";
-	}
-	else{
-		alert("Aucun match a retirer");
-	}
-}
-
-function cacher_match(){
-	var elm=null;
-	for(var i = 0; i <10 ; i++){
-		elm = document.getElementById("m"+i);
-		elm.style.visibility = "hidden";
-	}
-}
-
 function majmatch(){
 	var url = tableUrl;
 //	alert(url);
 	url += "&q="+q;
 //	alert(url);
 	gettable(url,false,"new");
-}
-
-function valmatch(ref,mdp){
-	var url = "gettable.php?nbr="+match;
-	var elm = null;
-	for(var i=0; i<match; i++){
-		elm = document.getElementById("m"+i);
-		url += "&h"+i+"="+elm.childNodes[1].value+"&sch"+i+"="+elm.childNodes[3].value+
-		"&e"+i+"="+elm.childNodes[7].value+"&sce"+i+"="+elm.childNodes[5].value+"&cpe"+i+"="+elm.childNodes[10].checked;
-	}
-	url += "&val=1&mdp="+mdp+"&q="+q;
-	gettable(url,true,"new");
-	//document.location.href=document.location.href;
-	//ref.parentNode.submit();
 }
 
 function do_action(url){
@@ -130,88 +85,6 @@ function freeze(bool){
 	alert("freeze");
 }
 
-function preretire_equipe(){
-	retire_equipe(match,"h");
-	retire_equipe(match,"e");
-}
-
-function retire_equipe(id,quoi){
-	var elm = document.getElementById('m'+id);
-	var eq = elm.childNodes[team[quoi]].value;
-	if(eq != " " && eq != ""){
-		elm.childNodes[team[quoi]].setAttribute("team",eq);
-		var sel = elm.childNodes[7+1-team[quoi]];
-		enleve_option(eq,sel);
-		for(var i = 0; i<10; i++){
-			if(i != id){
-				elm = document.getElementById('m'+i);
-				enleve_option(eq,elm.childNodes[1]);
-				enleve_option(eq,elm.childNodes[7]);
-			}
-		}
-	}
-	else{
-		elm.childNodes[team[quoi]].setAttribute("team","");
-	}
-}
-
-function enleve_option(str,elm){
-	//if(match > 9) alert("zut2");
-	var nstr = "";
-	var k = elm.selectedIndex;
-	for(var i=0; i<elm.options.length; i++){
-		if(elm.options[i].value != str) nstr += "<option>"+elm.options[i].value+"</option>";
-		else{
-			if(i<=k) k=k==0?0:k-1;
-		}
-	}
-	//nstr += "<option> </option>";
-	elm.innerHTML = nstr;
-	elm.selectedIndex = k;
-	//alert("pause enleve("+str+","+elm.parentNode.id+")");
-}
-
-function echange(id,quoi){
-	var elm = document.getElementById('m'+id);
-	var neq = elm.childNodes[team[quoi]].value;
-	//alert("neq=>"+neq+"<");
-	var oeq = elm.childNodes[team[quoi]].getAttribute("team");
-	retire_equipe(id,quoi);
-	if(oeq != " " && oeq != ""){
-		var sel = elm.childNodes[7+1-team[quoi]];
-		ajoute_option(oeq,sel);
-		for(var i = 0; i<10; i++){
-			if(i != id){
-				elm = document.getElementById('m'+i);
-				ajoute_option(oeq,elm.childNodes[1]);
-				ajoute_option(oeq,elm.childNodes[7]);
-			}
-		}
-	}
-}
-
-function ajoute_option(str,elm){
-	var nstr = "";
-	var k = elm.selectedIndex;
-	//alert("k="+k);
-	var i = 0;
-	var l = elm.options.length;
-	while(i<l && elm.options[i].value <= str){
-		if(elm.options[i].value != str){
-			nstr += "<option>"+elm.options[i].value+"</option>";
-		}
-		i++;
-	}
-	if(i<=k) k++;
-	nstr += "<option>"+str+"</option>"
-	//alert("new k="+k);
-	while(i<l && (elm.options[i].value > str || elm.options[i].value == "" || elm.options[i].value == " ")){ 
-		nstr += "<option>"+elm.options[i].value+"</option>";i++;
-	}
-	elm.innerHTML = nstr;
-	elm.selectedIndex = k;
-	//elm.options[k].setAttribute("selected","selected");
-}
 function qchange(zeq){
 	var exelm = document.getElementById(q);
 	var nelm = document.getElementById(zeq);

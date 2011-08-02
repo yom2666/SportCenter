@@ -65,8 +65,9 @@ public class Home extends Controller{
 		}
 	}
 		
-	public static void getTable(String sport, String league, String season, int jr)
+	public static void getTable(String sport, String league, String season, int jr, boolean escape, String q)
 	{
+		System.out.println(q + " : "+escape);
 		Object[] ooo = controll(sport, league, season);
 		if(ooo != null)
 		{
@@ -74,6 +75,14 @@ public class Home extends Controller{
 			League l = (League) ooo[1];
 			Season s = (Season) ooo[2];
 			List<Rank> ranks = Ranks.getRanks(sp, l, s, jr);
+			if(!escape)
+			{
+				List<Game> games = Game.find("season = ? AND played = false", s).fetch();
+				for(Game g : games)
+				{
+					Ranks.manageGame(ranks, g, false);
+				}
+			}
 			render(sp, l, s, ranks);
 		}
 	}

@@ -12,7 +12,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
-public class Rank extends Model{
+public class Rank extends Model implements Cloneable{
 	
 
 	@OneToOne
@@ -99,15 +99,43 @@ public class Rank extends Model{
 	public Rank copy(int jr)
 	{
 		Rank r = new Rank(team, season, jr);
-		try {
-			r = (Rank) this.clone();
-		} catch (CloneNotSupportedException e) 
-		{
-			e.printStackTrace();
-		}
 		r.jr = jr;
-		r.team = this.team;
-		r.season = this.season;
+		
+		r.rank = rank;
+		
+		r.gPts = gPts;
+		r.gJoues = gJoues;
+		r.gP = gP;
+		r.gN = gN;
+		r.gG = gG;
+		r.gBp = gBp;
+		r.gBc = gBc;
+		r.gDiff = gDiff;
+		
+		r.dPts = dPts;
+		r.dJoues = dJoues;
+		r.dP = dP;
+		r.dN = dN;
+		r.dG = dG;
+		r.dBp = dBp;
+		r.dBc = dBc;
+		r.dDiff = dDiff;
+		
+		r.xPts = xPts;
+		r.xJoues = xJoues;
+		r.xP = xP;
+		r.xN = xN;
+		r.xG = xG;
+		r.xBp = xBp;
+		r.xBc = xBc;
+		r.xDiff = xDiff;
+
+		r.ptitre = ptitre;
+		r.pldc = pldc;
+		r.pbar = pbar;
+		r.peuro = peuro;
+		r.prel = prel;
+		
 		return r;
 	}
 	
@@ -136,7 +164,7 @@ public class Rank extends Model{
 		@Override
 		public int compare(Rank r1, Rank r2) 
 		{
-			return Rank.compare(r1.gPts, r2.gPts, r1.gDiff, r2.gDiff, r1.gBp, r2.gBp, r1.team.name, r2.team.name);
+			return -Rank.compare(r1.gPts, r2.gPts, r1.gDiff, r2.gDiff, r1.gBp, r2.gBp, r1.team.name, r2.team.name);
 		}
 	};
 

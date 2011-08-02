@@ -127,9 +127,23 @@ public class Init extends Controller
 		modGame(sport, league, season, jr);
 	}
 	
-	public static void doMod(String sport, String league, String season, int jr)
+	public static void doMod(String sport, String league, String season, int jr, long id, boolean played, String date)
 	{
-		
+		System.out.println(date);
+		long d = -1;
+		try 
+		{
+			d = SHORT_DF.parse(date).getTime();
+		} 
+		catch (ParseException e) 
+		{
+			e.printStackTrace();
+		}
+		Game g = Game.findById(id);
+		g.date = d;
+		g.played = played;
+		g.save();
+		modGame(sport, league, season, jr);
 	}
 	
 	public static void doDelete(String sport, String league, String season, int jr, long id)

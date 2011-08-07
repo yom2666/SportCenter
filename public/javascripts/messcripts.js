@@ -109,7 +109,10 @@ function classuntil(nb){
 	gettable(url,false,"new");
 }
 function classuntildate(timestamp){
-	var url = "gettable.php?q="+q+"&untildate="+timestamp;
+	var url = tableUrl;
+//	alert(url);
+	url += "&escape=false&q="+q+"&untildate="+timestamp;
+//	alert(url);
 	gettable(url,false,"new");
 }
 function getOpponents(jr,equipe){

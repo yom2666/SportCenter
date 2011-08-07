@@ -34,7 +34,7 @@ public class Game extends Model{
 	@Override
 	public String toString() 
 	{
-		return home.toString() + " - " + away.toString();
+		return home.toString() + " - " + away.toString() + " " + scoreHome + " - " + scoreAway;
 	}
 
 }

@@ -65,9 +65,9 @@ public class Home extends Controller{
 		}
 	}
 		
-	public static void getTable(String sport, String league, String season, int jr, boolean escape, String q)
+	public static void getTable(String sport, String league, String season, int jr, boolean escape, String q, long untildate)
 	{
-		System.out.println(q + " : "+escape);
+		System.out.println(q + " : "+escape+" untildate:"+untildate);
 		Object[] ooo = controll(sport, league, season);
 		if(ooo != null)
 		{
@@ -77,11 +77,20 @@ public class Home extends Controller{
 			List<Rank> ranks = Ranks.getRanks(sp, l, s, jr);
 			if(!escape)
 			{
-				List<Game> games = Game.find("season = ? AND played = false", s).fetch();
+				List<Game> games = null;
+				if(untildate > 0)
+				{
+					games = Game.find("season = ? AND played = false AND date <= ?", s, untildate).fetch();
+				}
+				else
+				{
+					games = Game.find("season = ? AND played = false", s).fetch();
+				}
 				for(Game g : games)
 				{
 					Ranks.manageGame(ranks, g, false);
 				}
+				Collections.sort(ranks, Rank.GENERAL_COMPARATOR);
 			}
 			render(sp, l, s, ranks);
 		}

@@ -150,13 +150,12 @@ public class Ranks
 		homeRank.dBc += g.scoreAway;
 		awayRank.dBp += g.scoreAway;
 		awayRank.dBc += g.scoreHome;
-		for(Rank r : ranks)
+		homeRank.update();
+		awayRank.update();
+		if(save)
 		{
-			r.update();
-			if(save)
-			{
-				r.save();
-			}
+			homeRank.save();
+			awayRank.save();
 		}
 	}
 

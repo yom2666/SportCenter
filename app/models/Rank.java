@@ -73,7 +73,7 @@ public class Rank extends Model implements Cloneable{
 		dJoues = dG + dN + dP;
 		xJoues = xG + xN + xP;
 		dPts = dG * 3 + dN;
-		xPts = xG * 3 + dN;
+		xPts = xG * 3 + xN;
 		dDiff = dBp - dBc;
 		xDiff = xBp - xBc;
 		gPts = dPts + xPts;
@@ -147,7 +147,7 @@ public class Rank extends Model implements Cloneable{
 			{
 				if(bp1 == bp2)
 				{
-					return name1.compareToIgnoreCase(name2);
+					return -name1.compareToIgnoreCase(name2);
 				}
 				if(bp1 > bp2) return 1;
 				return -1;

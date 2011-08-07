@@ -153,6 +153,12 @@ public class Init extends Controller
 		addGame(sport, league, season, jr);
 	}
 	
+	public static void resetRanks(String sport, String league, String season, int jr)
+	{
+		Ranks.reset(jr);
+		Home.show(sport, league, season);
+	}
+	
 	private static List<Team> missingTeams(List<Game> games, Season season)
 	{
 		List<Team> teams = Team.find("? in elements(seasons) ORDER BY name", season).fetch();

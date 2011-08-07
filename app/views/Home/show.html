@@ -222,19 +222,17 @@
 		}
 	}%
 	<p align="center" style="font-size:0.5em;">
-	<form method="post">
-	<input type="hidden" name="match" value="${game.id}" />
+	#{form @Manage.saveGame(sp.name, l.name, s.name, jr), method:'POST'}
+	<input type="hidden" name="id" value="${game.id}" />
 	<input type="hidden" name="bloc" value="${_bloc}" />
-	<input type="hidden" name="id_team_d" value="${game.home.id}" />
-	<input type="hidden" name="id_team_x" value="${game.away.id}" />
     <span title="0.33">${game.home.name}</span>
       &nbsp;&nbsp;
-       <input name="sc_h" type="text" size="1" value="${game.scoreHome}" />&nbsp;
+       <input name="scoreHome" type="text" size="1" value="${game.scoreHome}" />&nbsp;
       <span title="0.33">-</span>&nbsp;
-      <input name="sc_e" type="text" size="1"  value="${game.scoreAway}" /> &nbsp;&nbsp;
+      <input name="scoreAway" type="text" size="1"  value="${game.scoreAway}" /> &nbsp;&nbsp;
      <span title="0.33">${game.away.name}</span><br/>
 	<input type="submit" name="submit" value="Mettre à Jour" />
-	</form>
+	#{/form}
   </p>
   #{/list}
   </div>

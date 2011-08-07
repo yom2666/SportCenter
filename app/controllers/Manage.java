@@ -59,4 +59,17 @@ public class Manage extends Controller
 		played(sport, league, season, jr);
 	}
 	
+	public static void saveGame(String sport, String league, String season, int jr, long id, int scoreHome, int scoreAway)
+	{
+		Object[] ooo = Home.controll(sport, league, season);
+		if(ooo != null)
+		{
+			Game g = Game.findById(id);
+			g.scoreHome = scoreHome;
+			g.scoreAway = scoreAway;
+			g.save();
+		}
+		Home.show(sport, league, season);
+	}
+	
 }
